@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Sign in{% endblock %}
+{% block content %}
+<div class="auth-shell">
+  <section class="auth-aside">
+    <div class="brand-mark brand-mark-lg">P</div>
+    <p class="eyebrow">PAZO SOLUTIONS</p>
+    <h1>Attendance, made clearer.</h1>
+    <p>Manage daily attendance, review monthly totals, and keep employee records organised in one place.</p>
+    <div class="auth-feature"><span>✓</span> Daily attendance grid</div>
+    <div class="auth-feature"><span>✓</span> Monthly and annual reports</div>
+    <div class="auth-feature"><span>✓</span> Role-based access</div>
+  </section>
+  <section class="auth-card">
+    <div class="eyebrow">WELCOME BACK</div><h2>Sign in to your account</h2><p class="muted mb-4">Use your registered username or email address.</p>
+    <form method="post" novalidate>
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <div class="mb-3"><label class="form-label" for="identity">Username or email</label><input class="form-control form-control-lg" id="identity" name="identity" autocomplete="username" required autofocus value="{{ request.form.get('identity', '') }}" placeholder="Enter username or email"></div>
+      <div class="mb-3"><label class="form-label" for="password">Password</label><input class="form-control form-control-lg" id="password" name="password" type="password" autocomplete="current-password" required placeholder="Enter password"></div>
+      <div class="form-check mb-4"><input class="form-check-input" id="remember" name="remember" type="checkbox"><label class="form-check-label" for="remember">Keep me signed in on this device</label></div>
+      <button class="btn btn-primary btn-lg w-100" type="submit">Sign in <span aria-hidden="true">→</span></button>
+    </form>
+    <p class="auth-footnote">Access is managed by your PAZO administrator.</p>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}{{ page_title }}{% endblock %}
+{% block content %}
+<section class="page-heading"><div><p class="eyebrow">ACCESS CONTROL</p><h1>{{ page_title }}</h1><p class="muted">Passwords are stored as one-way hashes and never displayed.</p></div><a class="btn btn-outline-secondary" href="{{ url_for('users.index') }}">← Back to users</a></section>
+<div class="form-card narrow-card"><form method="post">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="mb-3"><label class="form-label" for="username">Username <span class="required-mark">*</span></label><input class="form-control" id="username" name="username" required maxlength="80" autocomplete="off" value="{{ request.form.get('username', user.username if user else '') }}"></div>
+  <div class="mb-3"><label class="form-label" for="email">Email address <span class="required-mark">*</span></label><input class="form-control" id="email" name="email" type="email" required maxlength="254" value="{{ request.form.get('email', user.email if user else '') }}"></div>
+  <div class="mb-3"><label class="form-label" for="password">{{ 'New password (leave blank to keep current)' if user else 'Initial password' }}{% if not user %} <span class="required-mark">*</span>{% endif %}</label><input class="form-control" id="password" name="password" type="password" minlength="12" autocomplete="new-password" {% if not user %}required{% endif %}><div class="form-text">Minimum 12 characters. Share initial credentials securely.</div></div>
+  <div class="mb-3"><label class="form-label" for="role">Role</label><select class="form-select" id="role" name="role"><option value="user" {% if request.form.get('role', user.role if user else 'user') == 'user' %}selected{% endif %}>Regular user — attendance only</option><option value="admin" {% if request.form.get('role', user.role if user else 'user') == 'admin' %}selected{% endif %}>Administrator — full management access</option></select></div>
+  <div class="form-check form-switch mb-4"><input class="form-check-input" id="active" name="active" type="checkbox" {% if request.method == 'POST' %}{% if request.form.get('active') == 'on' %}checked{% endif %}{% elif not user or user.active %}checked{% endif %}><label class="form-check-label" for="active">Account is active</label></div>
+  <div class="d-flex gap-2"><button class="btn btn-primary" type="submit">{{ 'Save changes' if user else 'Create account' }}</button><a class="btn btn-outline-secondary" href="{{ url_for('users.index') }}">Cancel</a></div>
+</form></div>
+{% endblock %}

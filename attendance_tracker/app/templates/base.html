@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#2e3192">
+  <title>{% block title %}{{ app_name }}{% endblock %} · PAZO Solutions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+  {% block head %}{% endblock %}
+</head>
+<body>
+{% if current_user.is_authenticated %}
+<nav class="navbar navbar-expand-lg app-navbar sticky-top">
+  <div class="container-fluid app-container">
+    <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('main.dashboard') }}">
+      <span class="brand-mark">P</span><span><strong>PAZO</strong><small class="brand-subtitle d-block">ATTENDANCE TRACKER</small></span>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav me-auto ms-lg-4">
+        <li class="nav-item"><a class="nav-link {% if request.endpoint == 'main.dashboard' %}active{% endif %}" href="{{ url_for('main.dashboard') }}">Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.endpoint == 'attendance.monthly' %}active{% endif %}" href="{{ url_for('attendance.monthly') }}">Attendance</a></li>
+        <li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Reports</a><ul class="dropdown-menu"><li><a class="dropdown-item" href="{{ url_for('reports.monthly') }}">Monthly report</a></li><li><a class="dropdown-item" href="{{ url_for('reports.yearly') }}">Yearly report</a></li></ul></li>
+        {% if current_user.role == 'admin' %}
+        <li class="nav-item"><a class="nav-link {% if request.endpoint and request.endpoint.startswith('people.') %}active{% endif %}" href="{{ url_for('people.index') }}">People</a></li>
+        <li class="nav-item"><a class="nav-link {% if request.endpoint and request.endpoint.startswith('users.') %}active{% endif %}" href="{{ url_for('users.index') }}">User access</a></li>
+        {% endif %}
+      </ul>
+      <div class="d-flex align-items-center gap-3 account-actions">
+        <div class="text-end d-none d-sm-block"><div class="account-name">{{ current_user.username }}</div><div class="account-role">{{ current_user.role|capitalize }}</div></div>
+        <a class="btn btn-light btn-sm" href="{{ url_for('auth.change_password') }}">Password</a>
+        <form action="{{ url_for('auth.logout') }}" method="post" class="m-0"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-outline-secondary btn-sm" type="submit">Log out</button></form>
+      </div>
+    </div>
+  </div>
+</nav>
+{% endif %}
+<main class="{% if current_user.is_authenticated %}app-container{% else %}auth-container{% endif %} py-4 py-lg-5">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}<div class="flash-stack" aria-live="polite">{% for category, message in messages %}<div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">{{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>{% endfor %}</div>{% endif %}
+  {% endwith %}
+  {% block content %}{% endblock %}
+</main>
+<footer class="app-footer"><div class="app-container d-flex flex-wrap justify-content-between gap-2"><span>© {{ now_year if now_year is defined else 2026 }} PAZO Solutions</span><span>Attendance Tracker · Keep records clear and secure</span></div></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

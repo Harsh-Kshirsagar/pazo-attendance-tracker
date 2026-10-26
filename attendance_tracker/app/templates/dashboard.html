@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<section class="welcome-row"><div><p class="eyebrow">PAZO SOLUTIONS · OPERATIONS</p><h1>Attendance dashboard</h1><p class="muted">A quick view of recorded attendance and monthly activity.</p></div><a class="btn btn-primary" href="{{ url_for('attendance.monthly') }}">Open attendance <span aria-hidden="true">→</span></a></section>
+<div class="metric-grid">
+  <article class="metric-card"><div class="metric-icon icon-indigo">♙</div><div class="metric-label">Active people</div><div class="metric-value">{{ active_people }}</div><div class="metric-note">Currently active records</div></article>
+  <article class="metric-card"><div class="metric-icon icon-green">P</div><div class="metric-label">Present marks this month</div><div class="metric-value">{{ month_counts.P }}</div><div class="metric-note">Through {{ today.strftime('%d %b %Y') }}</div></article>
+  <article class="metric-card"><div class="metric-icon icon-red">A</div><div class="metric-label">Absent marks this month</div><div class="metric-value">{{ month_counts.A }}</div><div class="metric-note">Recorded absences</div></article>
+  <article class="metric-card"><div class="metric-icon icon-amber">L</div><div class="metric-label">Leave marks this month</div><div class="metric-value">{{ month_counts.L }}</div><div class="metric-note">Recorded leave days</div></article>
+</div>
+<div class="dashboard-grid">
+  <section class="panel-card"><div class="panel-heading"><div><h2>Today's attendance</h2><p class="muted">{{ today.strftime('%A, %d %B %Y') }}</p></div><span class="soft-pill">{{ today_marked }} mark{{ '' if today_marked == 1 else 's' }}</span></div>
+    <div class="today-status-grid"><div class="today-status status-present"><span>Present</span><strong>{{ today_counts.P }}</strong></div><div class="today-status status-absent"><span>Absent</span><strong>{{ today_counts.A }}</strong></div><div class="today-status status-leave"><span>Leave</span><strong>{{ today_counts.L }}</strong></div></div>
+    {% if active_people and today_marked < active_people %}<p class="small muted mt-3 mb-0">{{ active_people - today_marked }} active person record(s) do not have a mark for today. Blank dates are not automatically treated as absent.</p>{% elif active_people == 0 %}<p class="small muted mt-3 mb-0">Add active people to start recording attendance.</p>{% else %}<p class="small muted mt-3 mb-0">All active people have a recorded mark for today.</p>{% endif %}
+  </section>
+  <section class="panel-card"><div class="panel-heading"><div><h2>Quick actions</h2><p class="muted">Common tasks</p></div></div>
+    <a class="quick-link" href="{{ url_for('attendance.monthly') }}"><span class="quick-icon">▦</span><span><strong>Mark attendance</strong><small>Choose a month and update daily statuses</small></span><span class="quick-arrow">→</span></a>
+    <a class="quick-link" href="{{ url_for('reports.monthly') }}"><span class="quick-icon">▤</span><span><strong>Monthly report</strong><small>Review present, absent and leave totals</small></span><span class="quick-arrow">→</span></a>
+    <a class="quick-link" href="{{ url_for('reports.yearly') }}"><span class="quick-icon">▥</span><span><strong>Yearly report</strong><small>Compare attendance across the year</small></span><span class="quick-arrow">→</span></a>
+    {% if current_user.role == 'admin' %}<a class="quick-link" href="{{ url_for('people.index') }}"><span class="quick-icon">♧</span><span><strong>Manage people</strong><small>Add or deactivate employee records</small></span><span class="quick-arrow">→</span></a>{% endif %}
+  </section>
+</div>
+{% endblock %}

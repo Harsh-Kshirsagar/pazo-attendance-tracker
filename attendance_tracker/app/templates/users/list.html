@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}User access{% endblock %}
+{% block content %}
+<section class="page-heading"><div><p class="eyebrow">ACCESS CONTROL</p><h1>User access</h1><p class="muted">Create accounts and grant or revoke administrator access.</p></div><a href="{{ url_for('users.create') }}" class="btn btn-primary">＋ Create user</a></section>
+<section class="security-note"><span class="note-icon">i</span><div><strong>Role permissions</strong><p class="mb-0">Administrators can manage users and people. Regular users can view reports and update attendance, but cannot access user management or edit people records.</p></div></section>
+<section class="panel-card mt-3">
+  <form method="get" class="search-form mb-3"><div class="search-field"><label class="visually-hidden" for="q">Search accounts</label><input class="form-control" id="q" name="q" value="{{ query }}" placeholder="Search by username or email"></div><button class="btn btn-outline-primary" type="submit">Search</button>{% if query %}<a class="btn btn-light" href="{{ url_for('users.index') }}">Clear</a>{% endif %}</form>
+  <div class="table-responsive"><table class="table app-table align-middle"><thead><tr><th>Username</th><th>Email</th><th>Role</th><th>Account status</th><th>Created</th><th class="text-end">Actions</th></tr></thead><tbody>
+  {% for user in users %}<tr><td class="fw-semibold">{{ user.username }}{% if user.id == current_user.id %}<span class="you-tag">You</span>{% endif %}</td><td>{{ user.email }}</td><td><span class="role-badge {{ 'role-admin' if user.role == 'admin' else 'role-user' }}">{{ user.role|capitalize }}</span></td><td><span class="state-badge {{ 'state-active' if user.active else 'state-inactive' }}">{{ 'Active' if user.active else 'Inactive' }}</span></td><td>{{ user.created_at.strftime('%d %b %Y') if user.created_at else '—' }}</td><td class="text-end"><a class="btn btn-sm btn-outline-secondary" href="{{ url_for('users.edit', user_id=user.id) }}">Edit access</a></td></tr>
+  {% else %}<tr><td colspan="6" class="empty-state compact-empty">No accounts matched this search.</td></tr>{% endfor %}
+  </tbody></table></div><div class="table-footnote">{{ users|length }} account(s) · The last active administrator cannot be deactivated or demoted.</div>
+</section>
+{% endblock %}
