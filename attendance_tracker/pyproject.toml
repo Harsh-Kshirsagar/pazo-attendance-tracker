@@ -1,2 +1,22 @@
+@'
+[project]
+name = "pazo-attendance-tracker"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = [
+    "Flask>=3.0,<4.0",
+    "click>=8.1,<9",
+    "Flask-SQLAlchemy>=3.1,<4.0",
+    "Flask-Login>=0.6,<1.0",
+    "Flask-WTF>=1.2,<2.0",
+    "PyMySQL>=1.1,<2.0",
+    "python-dotenv>=1.0,<2.0",
+    "reportlab>=4.0,<5.0",
+    "email-validator>=2.0,<3.0",
+    "holidays>=0.60,<1.0",
+    "cryptography>=42.0.0",
+]
+
 [tool.vercel]
 entrypoint = "run:app"
+'@ | Set-Content -Path .\pyproject.toml -Encoding ascii
