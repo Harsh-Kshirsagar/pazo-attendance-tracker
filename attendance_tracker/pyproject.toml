@@ -1,4 +1,2 @@
-@'
 [tool.vercel]
 entrypoint = "run:app"
-'@ | Set-Content -Path .\attendance_tracker\pyproject.toml -Encoding ascii
